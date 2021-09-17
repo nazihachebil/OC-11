@@ -12,14 +12,14 @@ trigger orderTrigger on Order (before update,after insert, after update, after d
                order OldEtat = trigger.oldMap.get(ord.Id);
                if(NewEtat.Status!=OldEtat.Status){
                  if(NewEtat.Status=='Activated' && OldEtat.Status=='Draft'){
-                     ordCheck=AP01Order.checkOrderProduct(NewEtat.Id); 
-                     if(ordCheck==true){
-                         NewEtat.addError('You must add order products before activating Order.');
-                     }
+                     ordsetIds.add(NewEtat.Id);
                  }
                }
                
            }
+        }
+        if(ordsetIds!=null && ordsetIds.size()>0){
+            AP01Order.checkOrderProduct(ordsetIds);
         }
         
    }

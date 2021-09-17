@@ -1,12 +1,20 @@
 public class AP01Order {
    
-    public static boolean checkOrderProduct(Id OrdId){
+    public class MyException extends Exception {}
+    
+    public static void checkOrderProduct(set<Id> OrdSetIds){
       
-      // Vérifier s'il y a des order products rattaché à l'order. S'il existe, return false sinon return true
-      Order ordRecord=[select Id,(select Id from OrderItems) from order Where Id = :OrdId LIMIT 1 ];
+      // Vérifier s'il y a des order products rattaché à l'order. S'il existe, jeter une exception
       
-      if(ordRecord.OrderItems.size()==0)  return true;
-      else return false;
+      for(Order ord:[select Id,(select Id from OrderItems) from order Where Id IN :OrdSetIds])
+      {
+          if(ord.OrderItems.size()==0){
+             
+              Throw  new MyException('You must add order products before activating order.');
+          }
+      }
+      
+     
       
    }
     
